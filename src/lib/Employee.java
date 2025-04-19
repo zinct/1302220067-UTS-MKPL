@@ -53,27 +53,32 @@ public class Employee {
     }
     
     /**
-     * Fungsi untuk menentukan gaji bulanan pegawai berdasarkan grade kepegawaiannya (grade 1: 3.000.000 per bulan, grade 2: 5.000.000 per bulan, grade 3: 7.000.000 per bulan)
+     * Fungsi untuk menentukan gaji bulanan pegawai berdasarkan grade kepegawaiannya
      * Jika pegawai adalah warga negara asing gaji bulanan diperbesar sebanyak 50%
      */
-    
-    public void setMonthlySalary(int grade) {    
-        if (grade == 1) {
-            monthlySalary = GRADE_1_SALARY;
-            if (isForeigner) {
-                monthlySalary = (int) (GRADE_1_SALARY * FOREIGNER_SALARY_MULTIPLIER);
-            }
-        } else if (grade == 2) {
-            monthlySalary = GRADE_2_SALARY;
-            if (isForeigner) {
-                monthlySalary = (int) (GRADE_2_SALARY * FOREIGNER_SALARY_MULTIPLIER);
-            }
-        } else if (grade == 3) {
-            monthlySalary = GRADE_3_SALARY;
-            if (isForeigner) {
-                monthlySalary = (int) (GRADE_3_SALARY * FOREIGNER_SALARY_MULTIPLIER);
-            }
+    public void setMonthlySalary(int grade) {
+        switch(grade) {
+            case 1:
+                monthlySalary = GRADE_1_SALARY;
+                break;
+            case 2:
+                monthlySalary = GRADE_2_SALARY;
+                break;
+            case 3:
+                monthlySalary = GRADE_3_SALARY;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid grade: " + grade);
         }
+        
+        // Apply foreigner salary multiplier if applicable
+        if (isForeigner) {
+            monthlySalary = applyForeignerSalaryMultiplier(monthlySalary);
+        }
+    }
+    
+    private int applyForeignerSalaryMultiplier(int salary) {
+        return (int) (salary * FOREIGNER_SALARY_MULTIPLIER);
     }
     
     public void setAnnualDeductible(int deductible) {    
@@ -86,7 +91,7 @@ public class Employee {
     
     public void setSpouse(String spouseName, String spouseIdNumber) {
         this.spouseName = spouseName;
-        this.spouseIdNumber = idNumber;
+        this.spouseIdNumber = spouseIdNumber;
     }
     
     public void addChild(String childName, String childIdNumber) {
@@ -96,7 +101,7 @@ public class Employee {
     
     public int getAnnualIncomeTax() {
         
-        //Menghitung berapa lama pegawai bekerja dalam setahun ini, jika pegawai sudah bekerja dari tahun sebelumnya maka otomatis dianggap 12 bulan.
+        // Menghitung berapa lama pegawai bekerja dalam setahun ini, jika pegawai sudah bekerja dari tahun sebelumnya maka otomatis dianggap 12 bulan.
         LocalDate date = LocalDate.now();
         
         if (date.getYear() == yearJoined) {
